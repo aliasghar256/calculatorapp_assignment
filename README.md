@@ -5,10 +5,11 @@ A new Flutter project.
 ## Getting Started
 
 ### Screenshot 1
-![Screenshot 1](Screenshot_1731060945.png)
+<img src="Screenshot_1731060945.png" alt="Screenshot 1" width="400"/>
 
 ### Screenshot 2
-![Screenshot 2](Screenshot_1731060933.png)
+<img src="Screenshot_1731060933.png" alt="Screenshot 2" width="400"/>
+
 
 This project is a starting point for a Flutter application.
 
