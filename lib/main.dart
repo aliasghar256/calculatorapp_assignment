@@ -68,12 +68,12 @@ class CalculatorScreen extends StatelessWidget {
     return Consumer<CalculatorProvider>(
       builder: (context, calculator, child) {
         return Container(
-          alignment: Alignment.centerRight,
+          alignment: Alignment.bottomRight,
           padding: EdgeInsets.all(16),
           color: Colors.black,
           child: Text(
             calculator.display, // Display current input or result
-            style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold, color: Colors.white),
+            style: TextStyle(fontFamily: 'Roboto' ,fontSize: 60, fontWeight: FontWeight.w300, color: Colors.white),
           ),
         );
       },
@@ -87,25 +87,26 @@ class CalculatorButtons extends StatelessWidget {
     return Container(color:Colors.black, child: GridView.count(
       crossAxisCount: 4,
       children: [
-        buildButton(context, 'AC' ), buildButton(context, '+/-'), buildButton(context, '%'), buildButton(context, '÷'),
-        buildButton(context, '7'), buildButton(context, '8'), buildButton(context, '9'), buildButton(context, 'x'),
-        buildButton(context, '4'), buildButton(context, '5'), buildButton(context, '6'), buildButton(context, '-'),
-        buildButton(context, '1'), buildButton(context, '2'), buildButton(context, '3'), buildButton(context, '+'),
-        buildButton(context, '0'), buildButton(context, '.'), buildButton(context, '='),
+        buildButton(context, 'AC','FFA5A5A5' ), buildButton(context, '+/-','FFA5A5A5' ), buildButton(context, '%','FFA5A5A5'), buildButton(context, '÷','FFFF9500'),
+        buildButton(context, '7','FF333333'), buildButton(context, '8','FF333333'), buildButton(context, '9','FF333333'), buildButton(context, 'x','FFFF9500'),
+        buildButton(context, '4','FF333333'), buildButton(context, '5','FF333333'), buildButton(context, '6','FF333333'), buildButton(context, '-','FFFF9500'),
+        buildButton(context, '1','FF333333'), buildButton(context, '2','FF333333'), buildButton(context, '3','FF333333'), buildButton(context, '+','FFFF9500'),
+        buildButton(context, '0','FF333333'), buildButton(context, '.','FF333333'), buildButton(context, '=','FFFF9500'),
       ],
     ),);
   }
 
-  Widget buildButton(BuildContext context, String text) {
+  Widget buildButton(BuildContext context, String text, String colorCode) {
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ElevatedButton(
         onPressed: () {
           Provider.of<CalculatorProvider>(context, listen: false).input(text,context);
         },
-        child: Text(text, style: TextStyle(fontSize: 28)),
+        child: Text(text, style: TextStyle(fontSize: 28, fontWeight: FontWeight.w300)),
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.grey[700],
+          backgroundColor: Color(int.parse(colorCode, radix: 16)) ,
           foregroundColor: Colors.white,
         ),
       ),
