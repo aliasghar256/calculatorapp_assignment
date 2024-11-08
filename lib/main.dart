@@ -3,8 +3,10 @@ import 'package:provider/provider.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => CalculatorProvider(),
+    MultiProvider(providers: [
+      ChangeNotifierProvider(create: (context) => CalculatorProvider()),
+      ChangeNotifierProvider(create: (context) => CalculatoryHistoryProvider()),
+    ],
       child: MyApp(),
     ),
   );
@@ -30,7 +32,20 @@ class CalculatorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Calculator')),
+      appBar: AppBar(title: Text('Calculator'),
+      actions: [
+          IconButton(
+            icon: Icon(Icons.history),
+            onPressed: () {
+              // Navigate to the history page
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CalculatorHistoryPage()),
+              );
+            },
+          ),
+        ],),
+      
       body: Column(
         children: [
           Expanded(
@@ -86,7 +101,7 @@ class CalculatorButtons extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: ElevatedButton(
         onPressed: () {
-          Provider.of<CalculatorProvider>(context, listen: false).input(text);
+          Provider.of<CalculatorProvider>(context, listen: false).input(text,context);
         },
         child: Text(text, style: TextStyle(fontSize: 28)),
         style: ElevatedButton.styleFrom(
@@ -107,11 +122,11 @@ class CalculatorProvider extends ChangeNotifier {
   String get display => _display;
 
   // Handle input based on button text
-  void input(String buttonText) {
+  void input(String buttonText,BuildContext context) {
     if (buttonText == 'AC') {
       clear();
     } else if (buttonText == '=') {
-      calculateResult();
+      calculateResult(context: context);
     } else if ('+-*/'.contains(buttonText)) {
       setOperator(buttonText);
     } else {
@@ -138,11 +153,14 @@ class CalculatorProvider extends ChangeNotifier {
   }
 
   // Calculate result based on the current operator
-  void calculateResult() {
+  void calculateResult({required BuildContext context}) {
     if (_operator == null) return;
 
     double secondOperand = double.tryParse(_display) ?? 0;
-    double result;
+    double? result;
+
+    String calculation = '$_firstOperand $_operator $secondOperand = $result';
+    Provider.of<CalculatoryHistoryProvider>(context, listen: false).addHistory(calculation);
 
     switch (_operator) {
       case '+':
@@ -172,5 +190,46 @@ class CalculatorProvider extends ChangeNotifier {
     _firstOperand = 0;
     _operator = null;
     _shouldClearDisplay = false;
+  }
+}
+
+class CalculatorHistoryPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<CalculatoryHistoryProvider>(builder: (context, historyProvider, child) {
+      return Scaffold(
+        appBar: AppBar(title: Text('History')),
+        body: ListView.builder(
+          itemCount: historyProvider.history.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: Text(historyProvider.history[index]),
+            );
+          },
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            historyProvider.clearHistory();
+          },
+          child: Icon(Icons.delete),
+        ),
+      );
+    });
+  }
+}
+
+class CalculatoryHistoryProvider extends ChangeNotifier {
+  List<String> _history = [];
+
+  List<String> get history => _history;
+
+  void addHistory(String expression) {
+    _history.add(expression);
+    notifyListeners();
+  }
+
+  void clearHistory() {
+    _history.clear();
+    notifyListeners();
   }
 }
