@@ -32,7 +32,7 @@ class CalculatorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Calculator'),
+      appBar: AppBar(
       actions: [
           IconButton(
             icon: Icon(Icons.history),
@@ -127,7 +127,7 @@ class CalculatorProvider extends ChangeNotifier {
       clear();
     } else if (buttonText == '=') {
       calculateResult(context: context);
-    } else if ('+-*/'.contains(buttonText)) {
+    } else if ('+-x÷'.contains(buttonText)) {
       setOperator(buttonText);
     } else {
       appendDigit(buttonText);
@@ -147,6 +147,12 @@ class CalculatorProvider extends ChangeNotifier {
 
   // Set operator for calculation
   void setOperator(String operator) {
+    if (operator == "x") {
+      operator = "*";
+    }
+    else if (operator == "÷") {
+      operator = "/";
+    }
     _firstOperand = double.tryParse(_display) ?? 0;
     _operator = operator;
     _shouldClearDisplay = true; // Clear display for new operand input
@@ -158,9 +164,6 @@ class CalculatorProvider extends ChangeNotifier {
 
     double secondOperand = double.tryParse(_display) ?? 0;
     double? result;
-
-    String calculation = '$_firstOperand $_operator $secondOperand = $result';
-    Provider.of<CalculatoryHistoryProvider>(context, listen: false).addHistory(calculation);
 
     switch (_operator) {
       case '+':
@@ -178,7 +181,8 @@ class CalculatorProvider extends ChangeNotifier {
       default:
         result = secondOperand;
     }
-
+    String calculation = '$_firstOperand $_operator $secondOperand = $result';
+    Provider.of<CalculatoryHistoryProvider>(context, listen: false).addHistory(calculation);
     _display = result.toString();
     _operator = null;
     _shouldClearDisplay = true;
@@ -198,7 +202,17 @@ class CalculatorHistoryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<CalculatoryHistoryProvider>(builder: (context, historyProvider, child) {
       return Scaffold(
-        appBar: AppBar(title: Text('History')),
+        appBar: AppBar(title: Text('History'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.clear),
+            onPressed: () {
+              // Clear history
+              historyProvider.clearHistory();
+            },
+          ),
+        ],
+        ),
         body: ListView.builder(
           itemCount: historyProvider.history.length,
           itemBuilder: (context, index) {
