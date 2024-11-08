@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 void main() {
   runApp(
+    
     MultiProvider(providers: [
       ChangeNotifierProvider(create: (context) => CalculatorProvider()),
       ChangeNotifierProvider(create: (context) => CalculatoryHistoryProvider()),
@@ -19,8 +20,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Calculator',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        
         useMaterial3: true,
       ),
       home: CalculatorPage(),
@@ -32,10 +35,9 @@ class CalculatorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-      actions: [
-          IconButton(
-            icon: Icon(Icons.history),
+      appBar: AppBar( backgroundColor: Colors.black,
+          leading: IconButton(
+            icon: Icon(Icons.history, color: Colors.white,  ),
             onPressed: () {
               // Navigate to the history page
               Navigator.push(
@@ -44,7 +46,7 @@ class CalculatorPage extends StatelessWidget {
               );
             },
           ),
-        ],),
+        ),
       
       body: Column(
         children: [
@@ -104,7 +106,7 @@ class CalculatorButtons extends StatelessWidget {
         onPressed: () {
           Provider.of<CalculatorProvider>(context, listen: false).input(text,context);
         },
-        child: Text(text, style: TextStyle(fontSize: 28, fontWeight: FontWeight.w300)),
+        child: Text(text, style: TextStyle(fontSize: 28, fontWeight: FontWeight.w400, )),
         style: ElevatedButton.styleFrom(
           backgroundColor: Color(int.parse(colorCode, radix: 16)) ,
           foregroundColor: Colors.white,
@@ -204,6 +206,8 @@ class CalculatorHistoryPage extends StatelessWidget {
     return Consumer<CalculatoryHistoryProvider>(builder: (context, historyProvider, child) {
       return Scaffold(
         appBar: AppBar(title: Text('History'),
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
         actions: [
           IconButton(
             icon: Icon(Icons.clear),
@@ -214,11 +218,14 @@ class CalculatorHistoryPage extends StatelessWidget {
           ),
         ],
         ),
+        backgroundColor: Colors.black,
+        
         body: ListView.builder(
+          
           itemCount: historyProvider.history.length,
           itemBuilder: (context, index) {
             return ListTile(
-              title: Text(historyProvider.history[index]),
+              title: Text(historyProvider.history[index], style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w300)),
             );
           },
         ),
